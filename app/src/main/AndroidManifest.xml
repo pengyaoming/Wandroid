@@ -24,5 +24,4 @@
         <activity android:name=".ui.home.seek.SeekActivity" />
         <activity android:name=".ui.series.article.ArticleActivity" />
     </application>
-
 </manifest>
