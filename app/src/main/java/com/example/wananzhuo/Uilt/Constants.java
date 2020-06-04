@@ -1,6 +1,7 @@
 package com.example.wananzhuo.Uilt;
 
-import com.hjq.toast.ToastUtils;
+import android.Manifest;
+
 
 /**
  * Created by Android Studio.
@@ -13,4 +14,6 @@ public class Constants {
             "导航",
             "我的"};
 
+    public static final String[] PESS = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    public static final int PASS_INDEX = 101;
 }

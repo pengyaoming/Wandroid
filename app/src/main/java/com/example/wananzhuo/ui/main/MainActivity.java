@@ -1,14 +1,18 @@
 package com.example.wananzhuo.ui.main;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
 import com.example.wananzhuo.R;
+import com.example.wananzhuo.Uilt.getPhotoFromPhotoAlbum;
 import com.example.wananzhuo.base.BaseActivity;
+import com.example.wananzhuo.ui.mine.MineFragment;
 import com.gyf.barlibrary.ImmersionBar;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
@@ -71,5 +75,16 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     protected void onDestroy() {
         super.onDestroy();
         ImmersionBar.with(this).destroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        String path;
+        if (requestCode == 2 && resultCode == RESULT_OK) {
+            path = getPhotoFromPhotoAlbum.getRealPathFromUri(this, data.getData());
+
+        }
+
     }
 }
