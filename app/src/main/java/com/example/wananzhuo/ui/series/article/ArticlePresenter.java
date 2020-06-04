@@ -59,7 +59,6 @@ public class ArticlePresenter extends BasePresenter<BaseModel, ArticleContract.I
             }
         });
         mRootView.setAdapter(homeAdapter);
-
     }
 
     public void initList() {
@@ -69,7 +68,6 @@ public class ArticlePresenter extends BasePresenter<BaseModel, ArticleContract.I
         page = 0;
         initNext();
     }
-
 
     public void setList(int id) {
         this.id = id;

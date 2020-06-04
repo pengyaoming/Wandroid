@@ -68,7 +68,6 @@ public class PersistentCookieStore {
                 cookies.get(url.host()).remove(name);
             }
         }
-
         //讲cookies持久化到本地
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
         prefsWriter.putString(url.host(), TextUtils.join(",", cookies.get(url.host()).keySet()));

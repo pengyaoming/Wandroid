@@ -7,6 +7,7 @@ import com.example.wananzhuo.Entity.HomeListEntity;
 import com.example.wananzhuo.Entity.HotEntity;
 import com.example.wananzhuo.Entity.WxListEntity;
 import com.example.wananzhuo.Entity.WxTitleEntity;
+import com.example.wananzhuo.ui.navigation.NavigationEntity;
 import com.example.wananzhuo.ui.series.SeriesEntity;
 
 import java.util.List;
@@ -44,7 +45,8 @@ public interface HttpDataSource {
 
     Observable<CodeEntity<List<SeriesEntity>>> getSeries();
 
-    Observable<CodeEntity<HomeListEntity<List<HomeEntity>>>> getList( int page,int id);
+    Observable<CodeEntity<HomeListEntity<List<HomeEntity>>>> getList(int page, int id);
 
+    Observable<CodeEntity<List<NavigationEntity>>> getNavigation();
 
 }

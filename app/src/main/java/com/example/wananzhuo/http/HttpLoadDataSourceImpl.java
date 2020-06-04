@@ -7,6 +7,7 @@ import com.example.wananzhuo.Entity.HomeListEntity;
 import com.example.wananzhuo.Entity.HotEntity;
 import com.example.wananzhuo.Entity.WxListEntity;
 import com.example.wananzhuo.Entity.WxTitleEntity;
+import com.example.wananzhuo.ui.navigation.NavigationEntity;
 import com.example.wananzhuo.ui.series.SeriesEntity;
 
 import java.util.List;
@@ -81,6 +82,11 @@ public class HttpLoadDataSourceImpl implements HttpDataSource {
     @Override
     public Observable<CodeEntity<HomeListEntity<List<HomeEntity>>>> getList(int page, int id) {
         return apiServer.getList(page, id);
+    }
+
+    @Override
+    public Observable<CodeEntity<List<NavigationEntity>>> getNavigation() {
+        return apiServer.getNavigation();
     }
 
 

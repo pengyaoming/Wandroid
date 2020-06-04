@@ -7,6 +7,7 @@ import com.example.wananzhuo.Entity.HomeListEntity;
 import com.example.wananzhuo.Entity.HotEntity;
 import com.example.wananzhuo.Entity.WxListEntity;
 import com.example.wananzhuo.Entity.WxTitleEntity;
+import com.example.wananzhuo.ui.navigation.NavigationEntity;
 import com.example.wananzhuo.ui.series.SeriesEntity;
 
 import java.util.List;
@@ -66,6 +67,11 @@ public interface ApiService {
 
     @GET("/article/list/{page}/json")
     Observable<CodeEntity<HomeListEntity<List<HomeEntity>>>> getList(@Path("page") int page, @Query("cid") int id);
+
+    @GET("/navi/json")
+    Observable<CodeEntity<List<NavigationEntity>>> getNavigation();
+
+
 //    /**
 //     * 公众号历史记录
 //     */

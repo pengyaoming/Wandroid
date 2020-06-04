@@ -11,6 +11,7 @@ import com.example.wananzhuo.base.BaseView;
 public class NavigationContract {
     interface IView extends BaseView {
 
+        void setAdapter(NavigationAdapter navigationAdapter);
     }
 
     interface IPresenter {

@@ -9,6 +9,8 @@ import com.hjq.toast.ToastUtils;
  * Time: 10:51
  */
 public class Constants {
-    public static final String[] MAIN = new String[]{"首页", "公众号", "体系", "导航", "我的"};
+    public static final String[] MAIN = new String[]{"首页", "公众号", "体系",
+            "导航",
+            "我的"};
 
 }
