@@ -23,7 +23,7 @@ import java.util.List;
  * Time: 9:33
  */
 public class MainPresenter extends BasePresenter<BaseModel, MainContract.IView> implements MainContract.IPresenter {
-    private MainPagerAdapter pagerAdapter;
+    public MainPagerAdapter pagerAdapter;
     private MainNavigatorAdapter navigatorAdapter;
     List<Fragment> fragments = new ArrayList<>();
 

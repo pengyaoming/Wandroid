@@ -1,41 +1,49 @@
 package com.example.wananzhuo.ui.mine;
 
-import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.example.wananzhuo.R;
+import com.example.wananzhuo.Uilt.BitmapMessage;
 import com.example.wananzhuo.Uilt.getPhotoFromPhotoAlbum;
 import com.example.wananzhuo.base.BaseFragment;
 import com.youth.banner.util.BannerUtils;
 
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
-import javax.sql.DataSource;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -59,9 +67,15 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
     LinearLayout liner;
     @BindView(R.id.jif)
     TextView jif;
+    @BindView(R.id.img_back)
+    ImageView img_back;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-
+    @BindView(R.id.relative)
+    RelativeLayout relative;
+    String path;
+    String fileName;
+    String mFilePath;
 
     @OnClick({R.id.img_title})
     public void onClick(View view) {
@@ -94,10 +108,13 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
     @Override
     protected void initData() {
         mPresenter = new MinePresenter(this, getContext());
-        String username = SPUtils.getInstance("user").getString("username");
-        Glide.with(getContext()).load("/storage/emulated/0/Pictures/Screenshots/Screenshot_20200603_185508.jpg").error(R.drawable.ic_head_portait).into(img_title);
+        setImage();
+        if (SPUtils.getInstance("user").getString("user") == null) {
+            tv_name.setText("未登录");
+        } else {
+            tv_name.setText(SPUtils.getInstance("user").getString("user"));
+        }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -105,37 +122,22 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
-    String path = "123";
-
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        String photoPath;
         if (requestCode == 2 && resultCode == RESULT_OK) {
-//            Uri uri = getImageView(getContext(), path);
-//            Glide.with(getContext()).load(uri).into(img_title);
-            initGlide();
-        }
-
-
-    }
-
-    private void initGlide() {
-         final String[] IMAGE_PROJECTION = {
-                MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.BUCKET_ID,
-                MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
-        Cursor imageCursor = getContext().getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                IMAGE_PROJECTION, null, null, IMAGE_PROJECTION[4] + " DESC");
-        int id = imageCursor.getInt(imageCursor.getColumnIndexOrThrow(IMAGE_PROJECTION[2]));
-        String path = imageCursor.getString(imageCursor.getColumnIndexOrThrow(IMAGE_PROJECTION[0]));
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            path = MediaStore.Images.Media
-                    .EXTERNAL_CONTENT_URI
-                    .buildUpon()
-                    .appendPath(String.valueOf(id)).build().toString();
+            photoPath = getPhotoFromPhotoAlbum.getRealPathFromUri(getContext(), data.getData());
+            Uri uri = getImageContentUri(getContext(), photoPath);
+            Glide.with(getContext()).load(photoPath).into(img_title);
+//            try {
+//                Bitmap bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(photoPath));
+//                BitmapMessage bitmapMessage = new BitmapMessage();
+//                Bitmap bitmap1 = bitmapMessage.blurBitmap(bitmap);
+//                Glide.with(getContext()).load(bitmap1).into(img_back);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
         }
     }
 
@@ -145,23 +147,23 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
         intent.setAction(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, 2);
-
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
         ToastUtils.showShort("你需要给予权限，才能选择图片");
-
     }
 
-    public static Uri getImageView(Context context, String path) {
-        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Images.Media._ID},
-                MediaStore.Images.Media.DATA + "=?", new String[]{path}, null);
+    public static Uri getImageContentUri(Context context, String path) {
+        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.Media._ID}, MediaStore.Images.Media.DATA + "=? ",
+                new String[]{path}, null);
         if (cursor != null && cursor.moveToFirst()) {
             int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
             Uri baseUri = Uri.parse("content://media/external/images/media");
             return Uri.withAppendedPath(baseUri, "" + id);
         } else {
+            // 如果图片不在手机的共享图片数据库，就先把它插入。
             if (new File(path).exists()) {
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Images.Media.DATA, path);
@@ -170,6 +172,12 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
                 return null;
             }
         }
+    }
 
+    private void setImage() {
+// 通过uri加载图片
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            BannerUtils.setBannerRound(img_title, 20);
+        }
     }
 }

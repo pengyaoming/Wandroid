@@ -28,6 +28,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     ViewPager viewPager;
     @BindView(R.id.top_view)
     View top_view;
+    int index = 0;
 
     @Override
     public int getLayoutId() {
@@ -42,7 +43,12 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
 
     @Override
     public void initData() {
-        ImmersionBar.with(this)
+        initState(0);
+
+    }
+
+    private void initState(int position) {
+        ImmersionBar.with(MainActivity.this)
                 .titleBar(top_view) //指定标题栏view
                 .statusBarColor(R.color.main_color)
                 .init();
@@ -53,11 +59,10 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         mPresenter = new MainPresenter(this);
     }
 
-
     @Override
     public void setPagerView(MainPagerAdapter pagerAdapter) {
-        viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(3);
+        viewPager.setAdapter(pagerAdapter);
     }
 
     @Override
@@ -83,7 +88,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         String path;
         if (requestCode == 2 && resultCode == RESULT_OK) {
             path = getPhotoFromPhotoAlbum.getRealPathFromUri(this, data.getData());
-
         }
 
     }

@@ -27,6 +27,12 @@ public class MyApplication extends Application {
         instance = this;
         ToastUtils.init(instance);
         Utils.init(instance);
+//        if (LeakCanary.isInAnalyzerProcess(this)) {//1
+////            // This process is dedicated to LeakCanary for heap analysis.
+////            // You should not init your app in this process.
+////            return;
+////        }
+////        LeakCanary.install(this);
 
     }
 
@@ -41,20 +47,33 @@ public class MyApplication extends Application {
     }
 
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Looper.loop();
-                    } catch (Exception e) {
-                        Log.d(TAGH, e.getMessage());
-                    }
-                }
-            }
-        });
-    }
+//    @Override
+//    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(base);
+//        new Handler(Looper.getMainLooper()).post(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (true) {
+//                    try {
+//                        Looper.loop();
+//                    } catch (Exception e) {
+//                        Log.d(TAGH, e.getMessage());
+//                    }
+//                }
+//            }
+//        });
+//    }
+
+//    //性能检测工具
+//    private RefWatcher setupLeakCanary() {
+//        if (LeakCanary.isInAnalyzerProcess(this)) {
+//            return RefWatcher.DISABLED;
+//        }
+//        return LeakCanary.install(this);
+//    }
+//
+//    public static RefWatcher getRefWatcher(Context context) {
+//        MyApplication leakApplication = (MyApplication) context.getApplicationContext();
+//        return leakApplication.refWatcher;
+//    }
 }
