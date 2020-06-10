@@ -128,16 +128,29 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
         String photoPath;
         if (requestCode == 2 && resultCode == RESULT_OK) {
             photoPath = getPhotoFromPhotoAlbum.getRealPathFromUri(getContext(), data.getData());
-            Uri uri = getImageContentUri(getContext(), photoPath);
-            Glide.with(getContext()).load(photoPath).into(img_title);
-//            try {
-//                Bitmap bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(photoPath));
-//                BitmapMessage bitmapMessage = new BitmapMessage();
-//                Bitmap bitmap1 = bitmapMessage.blurBitmap(bitmap);
-//                Glide.with(getContext()).load(bitmap1).into(img_back);
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
+            int sdkVersion = Build.VERSION.SDK_INT;
+            if (sdkVersion == 29) {
+                Uri uri = getImageContentUri(getContext(), photoPath);
+                Glide.with(getContext()).load(uri).into(img_title);
+                //高斯模糊
+                getBack(uri);
+            } else {
+                Glide.with(getContext()).load(photoPath).into(img_title);
+                getBack(Uri.parse(photoPath));
+            }
+
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void getBack(Uri uri) {
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(uri));
+            BitmapMessage bitmapMessage = new BitmapMessage();
+            Bitmap bitmap1 = bitmapMessage.blurBitmap(bitmap);
+            Glide.with(getContext()).load(bitmap1).into(img_back);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

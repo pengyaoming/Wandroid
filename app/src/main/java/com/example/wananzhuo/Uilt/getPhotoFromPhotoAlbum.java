@@ -64,7 +64,6 @@ public class getPhotoFromPhotoAlbum {
             if (isMediaDocument(uri)) {
                 // 使用':'分割
                 String id = documentId.split(":")[1];
-
                 String selection = MediaStore.Images.Media._ID + "=?";
                 String[] selectionArgs = {id};
                 filePath = getDataColumn(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection, selectionArgs);
@@ -87,7 +86,6 @@ public class getPhotoFromPhotoAlbum {
      */
     private static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         String path = null;
-
         String[] projection = new String[]{MediaStore.Images.Media.DATA};
         Cursor cursor = null;
         try {
