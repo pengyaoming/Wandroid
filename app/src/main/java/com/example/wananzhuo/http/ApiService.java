@@ -1,18 +1,25 @@
 package com.example.wananzhuo.http;
 
+import android.util.Log;
+
 import com.example.wananzhuo.Entity.CodeEntity;
 import com.example.wananzhuo.Entity.DataBean;
 import com.example.wananzhuo.Entity.HomeEntity;
 import com.example.wananzhuo.Entity.HomeListEntity;
 import com.example.wananzhuo.Entity.HotEntity;
+import com.example.wananzhuo.Entity.LoginEntity;
 import com.example.wananzhuo.Entity.WxListEntity;
 import com.example.wananzhuo.Entity.WxTitleEntity;
 import com.example.wananzhuo.ui.navigation.NavigationEntity;
 import com.example.wananzhuo.ui.series.SeriesEntity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -70,6 +77,12 @@ public interface ApiService {
 
     @GET("/navi/json")
     Observable<CodeEntity<List<NavigationEntity>>> getNavigation();
+
+    @POST("/user/login")
+    Observable<CodeEntity<LoginEntity>> SetLogin(@Field("username") String username, @Field("password") String password);
+
+    @POST("/user/register")
+    Observable<CodeEntity<LoginEntity>> SetRegister(@FieldMap Map<String ,String> map);
 
 
 //    /**

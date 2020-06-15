@@ -5,12 +5,15 @@ import com.example.wananzhuo.Entity.DataBean;
 import com.example.wananzhuo.Entity.HomeEntity;
 import com.example.wananzhuo.Entity.HomeListEntity;
 import com.example.wananzhuo.Entity.HotEntity;
+import com.example.wananzhuo.Entity.LoginEntity;
 import com.example.wananzhuo.Entity.WxListEntity;
 import com.example.wananzhuo.Entity.WxTitleEntity;
 import com.example.wananzhuo.ui.navigation.NavigationEntity;
 import com.example.wananzhuo.ui.series.SeriesEntity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 
@@ -87,6 +90,20 @@ public class HttpLoadDataSourceImpl implements HttpDataSource {
     @Override
     public Observable<CodeEntity<List<NavigationEntity>>> getNavigation() {
         return apiServer.getNavigation();
+    }
+
+    @Override
+    public Observable<CodeEntity<LoginEntity>> SetLogin(String username, String password) {
+        return apiServer.SetLogin(username, password);
+    }
+
+    @Override
+    public Observable<CodeEntity<LoginEntity>> SetRegister(String username, String password, String repassword) {
+        Map<String, String> map = new HashMap<>();
+        map.put("username", username);
+        map.put("password", password);
+        map.put("repassword", repassword);
+        return apiServer.SetRegister(map);
     }
 
 

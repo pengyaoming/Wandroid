@@ -8,15 +8,13 @@
         android:id="@+id/relative"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/main_color">
+        android:layout_weight="1">
+
         <ImageView
             android:id="@+id/img_back"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:scaleType="fitXY" />
+            android:scaleType="center" />
 
         <ImageView
             android:id="@+id/img_title"
@@ -26,32 +24,38 @@
             android:layout_centerVertical="true"
             android:scaleType="fitXY" />
 
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/img_title"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
-            android:text="name"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="name"
+                android:layout_below="@+id/img_title"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/main_color"
+                android:textSize="14sp" />
+
 
         <LinearLayout
             android:id="@+id/liner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_name"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/item_mine"
             android:orientation="horizontal"
             android:padding="3dp">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
+                android:gravity="center"
                 android:text="我的积分:"
                 android:textColor="@color/main_color"
                 android:textSize="12sp" />

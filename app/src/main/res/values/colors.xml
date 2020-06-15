@@ -9,4 +9,5 @@
     <color name="home_banner_title">#1296db</color>
     <color name="white">#ffffff</color>
     <color name="home_top_color">#ca1720</color>
+    <color name="login_color">#1072A5</color>
 </resources>

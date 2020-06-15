@@ -1,4 +1,5 @@
 package com.example.wananzhuo.Uilt;
+
 import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
@@ -25,10 +26,10 @@ public class getPhotoFromPhotoAlbum {
      */
     public static String getRealPathFromUri(Context context, Uri uri) {
         int sdkVersion = Build.VERSION.SDK_INT;
-        if (sdkVersion >= 19 ) {
-            return getRealPathFromUriAboveApi19(context, uri);
-        }  else {
 
+        if (sdkVersion >= 19) {
+            return getRealPathFromUriAboveApi19(context, uri);
+        } else {
             return getRealPathFromUriBelowAPI19(context, uri);
         }
     }
@@ -43,9 +44,6 @@ public class getPhotoFromPhotoAlbum {
     private static String getRealPathFromUriBelowAPI19(Context context, Uri uri) {
         return getDataColumn(context, uri, null, null);
     }
-
-
-
 
 
     /**

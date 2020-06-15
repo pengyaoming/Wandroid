@@ -5,6 +5,7 @@ import com.example.wananzhuo.Entity.DataBean;
 import com.example.wananzhuo.Entity.HomeEntity;
 import com.example.wananzhuo.Entity.HomeListEntity;
 import com.example.wananzhuo.Entity.HotEntity;
+import com.example.wananzhuo.Entity.LoginEntity;
 import com.example.wananzhuo.Entity.WxListEntity;
 import com.example.wananzhuo.Entity.WxTitleEntity;
 import com.example.wananzhuo.ui.navigation.NavigationEntity;
@@ -13,6 +14,7 @@ import com.example.wananzhuo.ui.series.SeriesEntity;
 import java.util.List;
 
 import io.reactivex.Observable;
+import retrofit2.http.Field;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -48,5 +50,9 @@ public interface HttpDataSource {
     Observable<CodeEntity<HomeListEntity<List<HomeEntity>>>> getList(int page, int id);
 
     Observable<CodeEntity<List<NavigationEntity>>> getNavigation();
+
+    Observable<CodeEntity<LoginEntity>> SetLogin(String username, String password);
+
+    Observable<CodeEntity<LoginEntity>> SetRegister(String username, String password, String repassword);
 
 }
