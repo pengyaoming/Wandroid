@@ -1,17 +1,35 @@
 package com.example.wananzhuo.ui.mine.login;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.blankj.utilcode.util.SPUtils;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.wananzhuo.Entity.LoginEntity;
 import com.example.wananzhuo.R;
+import com.example.wananzhuo.Uilt.BitmapMessage;
 import com.example.wananzhuo.Uilt.OnClickUtils;
 import com.example.wananzhuo.base.BaseActivity;
 import com.hjq.toast.ToastUtils;
+
+import java.io.FileNotFoundException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -39,6 +57,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @BindView(R.id.edt_2_view)
     View edt_2_view;
     int index = 0;
+    @BindView(R.id.relative)
+    RecyclerView relative;
 
     @OnClick({R.id.tv_click, R.id.tv_register})
     public void OnClick(View view) {
@@ -98,8 +118,24 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         return R.layout.activity_login;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void initView() {
+        String uri = SPUtils.getInstance("img").getString("image");
+        try {
+            BitmapMessage bitmapMessage = new BitmapMessage();
+            Bitmap bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(Uri.parse(uri)));
+            Bitmap bitmap1 = bitmapMessage.blurBitmap(bitmap);
+            Glide.with(this).asBitmap().load(bitmap1).into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                    Drawable drawable = new BitmapDrawable(resource);
+                    relative.setBackground(drawable);
+                }
+            });
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -115,6 +151,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
     @Override
     public void setIntent(LoginEntity data) {
+        SPUtils.getInstance("user").put("user", data.getUsername());
         Intent intent = new Intent();
         intent.putExtra("name", data.getPublicName());
         setResult(1, intent);

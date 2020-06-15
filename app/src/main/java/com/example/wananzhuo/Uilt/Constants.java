@@ -16,4 +16,6 @@ public class Constants {
 
     public static final String[] PESS = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static final int PASS_INDEX = 101;
+    public static final String[] Mine = new String[]{"广场", "项目", "收藏", "问答", "设置"};
+    public static int TYPE = 0;
 }

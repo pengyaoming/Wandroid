@@ -10,4 +10,5 @@
     <color name="white">#ffffff</color>
     <color name="home_top_color">#ca1720</color>
     <color name="login_color">#1072A5</color>
+    <color name="login_hiht">#C5E3E3E3</color>
 </resources>

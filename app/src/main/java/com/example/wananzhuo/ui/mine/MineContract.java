@@ -11,6 +11,7 @@ import com.example.wananzhuo.base.BaseView;
 public class MineContract {
     interface IView extends BaseView {
 
+        void setAdapter(MineAdapter mAdapter);
     }
 
     interface IPresenter {

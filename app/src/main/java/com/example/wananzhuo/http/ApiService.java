@@ -20,6 +20,7 @@ import java.util.Map;
 import io.reactivex.Observable;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -78,11 +79,13 @@ public interface ApiService {
     @GET("/navi/json")
     Observable<CodeEntity<List<NavigationEntity>>> getNavigation();
 
+    @FormUrlEncoded
     @POST("/user/login")
     Observable<CodeEntity<LoginEntity>> SetLogin(@Field("username") String username, @Field("password") String password);
 
+    @FormUrlEncoded
     @POST("/user/register")
-    Observable<CodeEntity<LoginEntity>> SetRegister(@FieldMap Map<String ,String> map);
+    Observable<CodeEntity<LoginEntity>> SetRegister(@FieldMap Map<String, String> map);
 
 
 //    /**

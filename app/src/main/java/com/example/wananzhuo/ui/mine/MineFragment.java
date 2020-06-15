@@ -34,24 +34,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
-import com.blankj.utilcode.util.Utils;
 import com.bumptech.glide.Glide;
 import com.example.wananzhuo.R;
 import com.example.wananzhuo.Uilt.BitmapMessage;
 import com.example.wananzhuo.Uilt.getPhotoFromPhotoAlbum;
 import com.example.wananzhuo.base.BaseFragment;
+import com.example.wananzhuo.ui.mine.login.LoginActivity;
+import com.hjq.toast.ToastUtils;
 import com.youth.banner.util.BannerUtils;
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 
@@ -85,7 +82,7 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
     RelativeLayout relative;
     ContentValues values = new ContentValues();
 
-    @OnClick({R.id.img_title})
+    @OnClick({R.id.img_title, R.id.tv_name})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_title:
@@ -97,9 +94,19 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
                 } else {
                     EasyPermissions.requestPermissions(this, "需要获取权限", PASS_INDEX, PESS);
                 }
+                break;
+            case R.id.tv_name:
+                switch (TYPE) {
+                    case 0:
+                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                        startActivityForResult(intent, 3);
+                        break;
+                    case 1:
+                        ToastUtils.show("已登录~");
+                        break;
+                }
         }
     }
-
 
     public static Fragment getInstance() {
         MineFragment fragment = new MineFragment();
@@ -122,13 +129,13 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
         if (uri != null) {
             getBack(Uri.parse(uri));
         }
-        if (SPUtils.getInstance("user").getString("user") == null) {
+        if ((SPUtils.getInstance("user").getString("user") == null)) {
             tv_name.setText("未登录");
         } else {
             tv_name.setText(SPUtils.getInstance("user").getString("user"));
-            tv_name.setText("未登录");
         }
-
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mPresenter.initAdapter();
     }
 
     @Override
@@ -141,6 +148,12 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         String photoPath;
+        switch (resultCode) {
+            case 1:
+                String name = data.getStringExtra("name");
+                tv_name.setText(name);
+                break;
+        }
         if (requestCode == 2 && resultCode == RESULT_OK) {
             photoPath = getPhotoFromPhotoAlbum.getRealPathFromUri(getContext(), data.getData());
             int sdkVersion = Build.VERSION.SDK_INT;
@@ -152,7 +165,7 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
             } else {
                 SPUtils.getInstance("img").put("image", photoPath);
             }
-            setImage();
+
         }
     }
 
@@ -164,10 +177,10 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
             Bitmap bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(uri));
             Bitmap bitmap1 = bitmapMessage.blurBitmap(bitmap);
             Glide.with(getContext()).load(bitmap1).into(img_back);
+            setImage();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -180,7 +193,7 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
-        ToastUtils.showShort("你需要给予权限，才能选择图片");
+        ToastUtils.show("你需要给予权限，才能选择图片");
     }
 
     public static Uri getImageContentUri(Context context, String path) {
@@ -202,35 +215,8 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
         }
     }
 
-    //    public static Uri getImageContentUri(Context context, String path) {
-//        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//                new String[]{MediaStore.Images.Media._ID},
-//                MediaStore.Images.Media.TITLE + "=? ",
-//                new String[]{"Image"}, null);
-//        if (cursor != null && cursor.moveToFirst()) {
-//            int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
-//            Uri baseUri = Uri.parse("content://media/external/images/media");
-//            return Uri.withAppendedPath(baseUri, "" + id);
-//        } else {
-//            if (new File(path).exists()) {
-////            if (isAndroidQFileExists(context, path)) {
-//                ContentValues values = new ContentValues();
-//                values.put(MediaStore.Images.Media.DESCRIPTION, "This is an image");
-//                values.put(MediaStore.Images.Media.DISPLAY_NAME, "Image.png");
-//                values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
-//                values.put(MediaStore.Images.Media.TITLE, "Image.png");
-//                values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/test");
-////                values.put(MediaStore.Images.Media.DESCRIPTION, path);
-//                Uri uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-//                return uri;
-//            } else {
-//                return null;
-//            }
-//        }
-//    }
-
     private void setImage() {
-// 通过uri加载图片
+        // 通过uri加载图片
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             BannerUtils.setBannerRound(img_title, 20);
         }
@@ -244,11 +230,17 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
                 new String[]{path.substring(path.lastIndexOf("/") + 1)},
                 null);
         Uri uri = null;
+        assert cursor != null;
         if (cursor.moveToFirst()) {
             uri = ContentUris.withAppendedId(mediaUri,
                     cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
         }
         cursor.close();
         return uri;
+    }
+
+    @Override
+    public void setAdapter(MineAdapter mAdapter) {
+        recyclerView.setAdapter(mAdapter);
     }
 }
